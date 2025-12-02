@@ -71,7 +71,10 @@ def blur_face(image, landmarks, h, w):
 
 def process_video_auto(video_path, user_height_cm, age):
     mp_pose = mp.solutions.pose
-    pose = mp_pose.Pose(model_complexity=2, min_detection_confidence=0.6, min_tracking_confidence=0.6)
+    
+    # --- FIX: CHANGED COMPLEXITY FROM 2 TO 1 TO FIX CLOUD ERROR ---
+    pose = mp_pose.Pose(model_complexity=1, min_detection_confidence=0.6, min_tracking_confidence=0.6)
+    
     cap = cv2.VideoCapture(video_path)
     
     ret, check_frame = cap.read()
@@ -157,27 +160,25 @@ with st.container():
 
 st.divider()
 
-# --- TUTORIAL SECTION (GIF SUPPORT) ---
+# --- TUTORIAL SECTION ---
 st.markdown("### 📹 How to Scan")
 with st.expander("Click to see instructions", expanded=True):
     col_gif, col_text = st.columns([1, 2])
-    
     with col_gif:
-        # Tries to load 'tutorial.gif'. If missing, shows a placeholder.
         if os.path.exists("tutorial.gif"):
             st.image("tutorial.gif", use_container_width=True)
         else:
-            st.info("ℹ️ Add 'tutorial.gif' to folder")
-            st.markdown("Placeholder: 🧍‍♂️➡️🔄➡️✅")
+            st.info("ℹ️ Loading Demo...")
+            # Placeholder CSS animation if GIF is missing
+            st.markdown("""
+            <div style="width:100px;height:150px;background:#ddd;border-radius:10px;text-align:center;padding-top:60px;">🧍‍♂️</div>
+            """, unsafe_allow_html=True)
         
     with col_text:
         st.markdown("""
         **3 Simple Rules:**
-        
         ✅ **Full Body Visible:** Head to Toe must be in frame.
-        
         ✅ **Fitted Clothes:** Wear a T-shirt and shorts (No jackets).
-        
         ✅ **Spin Slowly:** Turn around once (360°) so we see all angles.
         """)
 
@@ -200,7 +201,6 @@ if uploaded_file is not None:
         
         final_chest = (cam_c + std_c) / 2 if abs(cam_c - std_c) < 12 else std_c
         
-        # Adaptive Waist Logic
         waist_diff = std_w - cam_w
         if cam_w < std_w:
             if waist_diff < 5.0: final_waist = cam_w 
