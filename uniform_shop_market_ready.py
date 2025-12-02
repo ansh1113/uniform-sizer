@@ -71,7 +71,7 @@ def blur_face(image, landmarks, h, w):
 
 def process_video_auto(video_path, user_height_cm, age):
     mp_pose = mp.solutions.pose
-    pose = mp_pose.Pose(model_complexity=2, min_detection_confidence=0.6, min_tracking_confidence=0.6)
+    pose = mp_pose.Pose(model_complexity=1, min_detection_confidence=0.6, min_tracking_confidence=0.6)
     cap = cv2.VideoCapture(video_path)
     
     ret, check_frame = cap.read()
@@ -84,8 +84,8 @@ def process_video_auto(video_path, user_height_cm, age):
     max_width_found = 0
     best_frame = None
     
-    TAILOR_FACTOR = 1.12 
-    WAIST_FACTOR = 3.55 
+    TAILOR_FACTOR = 1.14 
+    WAIST_FACTOR = 3.70 
     
     current = 0
     while cap.isOpened():
